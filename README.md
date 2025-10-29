@@ -40,7 +40,7 @@ The project consists of three main components:
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone git@github.com:samaysahu/Vox_GPT.git
 cd Vox_GPT
 ```
 
