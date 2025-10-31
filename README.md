@@ -138,6 +138,9 @@ cd Vox_GPT
     -   Navigate to the `Vox_GPT/Frontend` directory.
     -   Open the `chatbot.html` file in your web browser.
 
+
+    ![alt text](Image/image.png)
+
 ## How to Use
 
 -   Simply type your commands into the chat box and press Enter or click the send button.

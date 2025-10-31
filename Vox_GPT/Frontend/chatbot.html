@@ -105,7 +105,7 @@
         }
         .icon-button {
             display: flex;
-            align-leds: center;
+            align-items: center;
             justify-content: center;
             width: 64px;
             height: 64px;
@@ -221,22 +221,23 @@
             margin: 0 2px;
             animation: typingAnimation 1.4s infinite ease-in-out;
         }
-        .typing-dot:nth-child(1) {
-            animation-delay: 0s;
-        }
-        .typing-dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-        .typing-dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
         @keyframes typingAnimation {
-            0%, 60%, 100% {
-                transform: translateY(0);
-            }
-            30% {
-                transform: translateY(-5px);
-            }
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+
+        /* Image styling */
+        .chat-image {
+            max-width: 300px;
+            width: 100%;
+            border-radius: 12px;
+            margin-top: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            display: block;
         }
     </style>
 </head>
@@ -244,7 +245,7 @@
 <body class="text-white flex justify-center items-center min-h-screen p-4">
     <!-- Navigation Buttons -->
     <a href="/Frontend/main.html" id="close-btn" style="position: fixed; top: 24px; right: 24px; z-index: 100; text-decoration: none;" class="icon-button glassmorphism" title="Close Chatbot">
-        <span style="font-size: 2rem;">&times;</span>
+        <span style="font-size: 2rem;">×</span>
     </a>
     <div id="particles-js"></div>
     <div class="container max-w-4xl mx-auto space-y-8">
@@ -282,105 +283,24 @@
     <script>
         particlesJS("particles-js", {
             "particles": {
-                "number": {
-                    "value": 80,
-                    "density": {
-                        "enable": true,
-                        "value_area": 800
-                    }
-                },
-                "color": {
-                    "value": "#00c6ff"
-                },
-                "shape": {
-                    "type": "circle",
-                    "stroke": {
-                        "width": 0,
-                        "color": "#000000"
-                    },
-                    "polygon": {
-                        "nb_sides": 5
-                    }
-                },
-                "opacity": {
-                    "value": 0.5,
-                    "random": false,
-                    "anim": {
-                        "enable": false,
-                        "speed": 1,
-                        "opacity_min": 0.1,
-                        "sync": false
-                    }
-                },
-                "size": {
-                    "value": 3,
-                    "random": true,
-                    "anim": {
-                        "enable": false,
-                        "speed": 40,
-                        "size_min": 0.1,
-                        "sync": false
-                    }
-                },
-                "line_linked": {
-                    "enable": true,
-                    "distance": 150,
-                    "color": "#00c6ff",
-                    "opacity": 0.4,
-                    "width": 1
-                },
-                "move": {
-                    "enable": true,
-                    "speed": 2,
-                    "direction": "none",
-                    "random": false,
-                    "straight": false,
-                    "out_mode": "out",
-                    "bounce": false,
-                    "attract": {
-                        "enable": false,
-                        "rotateX": 600,
-                        "rotateY": 1200
-                    }
-                }
+                "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#00c6ff" },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.5, "random": false },
+                "size": { "value": 3, "random": true },
+                "line_linked": { "enable": true, "distance": 150, "color": "#00c6ff", "opacity": 0.4, "width": 1 },
+                "move": { "enable": true, "speed": 2, "direction": "none", "random": false, "straight": false, "out_mode": "out" }
             },
             "interactivity": {
                 "detect_on": "canvas",
                 "events": {
-                    "onhover": {
-                        "enable": true,
-                        "mode": "grab"
-                    },
-                    "onclick": {
-                        "enable": true,
-                        "mode": "push"
-                    },
+                    "onhover": { "enable": true, "mode": "grab" },
+                    "onclick": { "enable": true, "mode": "push" },
                     "resize": true
                 },
                 "modes": {
-                    "grab": {
-                        "distance": 140,
-                        "line_linked": {
-                            "opacity": 1
-                        }
-                    },
-                    "bubble": {
-                        "distance": 400,
-                        "size": 40,
-                        "duration": 2,
-                        "opacity": 8,
-                        "speed": 3
-                    },
-                    "repulse": {
-                        "distance": 200,
-                        "duration": 0.4
-                    },
-                    "push": {
-                        "particles_nb": 4
-                    },
-                    "remove": {
-                        "particles_nb": 2
-                    }
+                    "grab": { "distance": 140, "line_linked": { "opacity": 1 } },
+                    "push": { "particles_nb": 4 }
                 }
             },
             "retina_detect": true
@@ -392,71 +312,58 @@
             const sendButton = document.getElementById('send-button');
             const micButton = document.getElementById('mic-button');
             const typingIndicator = document.getElementById('typing-indicator');
-            
-        
-           // addMessage("🤖 Welcome to ROBOGPT! I can generate Arduino code for you. Try commands like:\n• 'write a code to blink LED using ESP32'\n• 'create a servo motor control program'\n• 'make a temperature sensor with LCD display'\n\nJust tell me what you want to build!", 'bot');
 
-            function addMessage(text, sender, frameBase64 = null) {
+            function addMessage(text, sender, imageBase64 = null) {
                 const messageDiv = document.createElement('div');
                 messageDiv.classList.add('message');
                 messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
-                
-                // Check if the message contains code blocks
+
+                // Handle code blocks
                 if (text.includes('```cpp')) {
-                    // Split the message into parts
                     const parts = text.split('```cpp');
                     let htmlContent = '';
-                    
                     for (let i = 0; i < parts.length; i++) {
                         if (i === 0) {
-                            // Text before code block
                             htmlContent += parts[i];
                         } else {
-                            // Code block
                             const codeEndIndex = parts[i].indexOf('```');
                             if (codeEndIndex !== -1) {
                                 const code = parts[i].substring(0, codeEndIndex);
                                 const remainingText = parts[i].substring(codeEndIndex + 3);
-                                
                                 htmlContent += `<div class="code-block">${code}</div>`;
-                                htmlContent += `<button class="copy-button" onclick="copyToClipboard('${code.replace(/'/g, "\\'").replace(/\n/g, '\\n')}')">📋 Copy Code</button>`;
+                                htmlContent += `<button class="copy-button" onclick="copyToClipboard('${code.replace(/'/g, "\\'").replace(/\n/g, '\\n')}')">Copy Code</button>`;
                                 htmlContent += remainingText;
                             } else {
                                 htmlContent += parts[i];
                             }
                         }
                     }
-                    
                     messageDiv.innerHTML = htmlContent;
                 } else {
                     messageDiv.textContent = text;
                 }
-                
-                // If frameBase64 is provided, add the image below the message
-                if (frameBase64) {
+
+                // Add image if provided
+                if (imageBase64) {
                     const img = document.createElement('img');
-                    img.src = `data:image/jpeg;base64,${frameBase64}`;
-                    img.style.maxWidth = '300px';
-                    img.style.display = 'block';
-                    img.style.marginTop = '10px';
-                    img.alt = 'Captured frame';
+                    img.src = `data:image/jpeg;base64,${imageBase64}`;
+                    img.className = 'chat-image';
+                    img.alt = 'Camera frame';
                     messageDiv.appendChild(img);
                 }
-                
+
                 chatContainer.insertBefore(messageDiv, typingIndicator);
                 chatContainer.scrollTop = chatContainer.scrollHeight;
             }
 
             function copyToClipboard(text) {
                 navigator.clipboard.writeText(text).then(() => {
-                    // Show a brief success message
                     const button = event.target;
                     const originalText = button.textContent;
-                    button.textContent = '✅ Copied!';
+                    button.textContent = 'Copied!';
                     button.style.background = 'rgba(0, 217, 119, 0.3)';
                     button.style.borderColor = '#00d977';
                     button.style.color = '#00d977';
-                    
                     setTimeout(() => {
                         button.textContent = originalText;
                         button.style.background = 'rgba(0, 198, 255, 0.2)';
@@ -465,7 +372,7 @@
                     }, 2000);
                 }).catch(err => {
                     console.error('Failed to copy: ', err);
-                    alert('Failed to copy code to clipboard');
+                    alert('Failed to copy code');
                 });
             }
 
@@ -484,21 +391,23 @@
 
                 addMessage(message, 'user');
                 userInput.value = '';
-                
                 showTypingIndicator();
+
                 try {
                     const response = await fetch('http://localhost:5000/chat', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ message: message })
+                        body: JSON.stringify({ message })
                     });
-                    
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    
+
+                    if (!response.ok) throw new Error('Network error');
+
                     const data = await response.json();
                     hideTypingIndicator();
-                    // Pass frame if present
-                    addMessage(data.response, 'bot', data.frame || null);
+
+                    // FIXED: Use `data.image`, not `data.frame`
+                    addMessage(data.response, 'bot', data.image || null);
+
                 } catch (error) {
                     hideTypingIndicator();
                     addMessage(`Error: ${error.message}`, 'bot');
@@ -513,6 +422,9 @@
             micButton.addEventListener('click', () => {
                 addMessage("Voice input is not implemented yet. Please type your message.", 'bot');
             });
+
+            // Optional: Welcome message
+            // addMessage("Hello! Try: 'what can you see in the frame' or 'move base to 90 degrees'", 'bot');
         });
     </script>
 </body>
