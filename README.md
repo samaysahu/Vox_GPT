@@ -8,6 +8,7 @@ Vox_GPT is a project that allows you to control a robotic arm using natural lang
 -   **Web-Based Interface:** An intuitive and visually appealing chat interface to interact with the robotic arm.
 -   **AI-Powered:** Uses Google's Gemini API to parse and understand user commands.
 -   **Real-time Control:** Commands are sent to the robotic arm in real-time over WiFi.
+-   **Keyboard Control:** Control the robotic arm using your keyboard for precise movements.
 
 ## System Architecture
 
@@ -117,7 +118,7 @@ cd Vox_GPT
 
 ### 4. Update Backend with ESP8266 IP
 
--   Open the `Vox_GPT/Backend/chatbot.py` file.
+-   Open the `Vox_GPT/Backend/chatbot.py` or `Vox_GPT/Backend/Keyboard_Control.py` file.
 -   Find the `ESP32_IP` variable and replace the placeholder IP address with the one you noted from the Arduino Serial Monitor.
     ```python
     # Note: The variable is named ESP32_IP but the code is for an ESP8266
@@ -141,7 +142,26 @@ cd Vox_GPT
 
     ![alt text](Image/image.png)
 
+## Running the Keyboard Control Application
+
+1.  **Start the Backend Server:**
+    -   Make sure you are in the `Vox_GPT/Backend` directory and your virtual environment is activated.
+    -   Run the Python script:
+        ```bash
+        python Keyboard_Control.py
+        ```
+    -   The server will start on `http://localhost:5000`.
+
+2.  **Open the Frontend:**
+    -   Navigate to the `Vox_GPT/Frontend` directory.
+    -   Open the `Keyboard_Control.html` file in your web browser.
+
+
+    ![alt text](Image/Keyboard_control.png)
+
 ## How to Use
+
+### Voice Control
 
 -   Simply type your commands into the chat box and press Enter or click the send button.
 -   The chatbot will interpret your command and send it to the robotic arm.
@@ -155,6 +175,29 @@ cd Vox_GPT
 -   `set the elbow to 45 degrees`
 -   `emergency stop`
 
+### How to Use Keyboard Control
+
+-   Use the keyboard to control the robot arm's movements.
+-   The controls are as follows:
+    -   **Base:**
+        -   `a`: Move base left
+        -   `d`: Move base right
+    -   **Shoulder:**
+        -   `w`: Move shoulder up
+        -   `s`: Move shoulder down
+    -   **Elbow:**
+        -   `i`: Move elbow up
+        -   `k`: Move elbow down
+    -   **Wrist:**
+        -   `j`: Move wrist left
+        -   `l`: Move wrist right
+    -   **Gripper:**
+        -   `o`: Open gripper
+        -   `c`: Close gripper
+
+
+
+
 ## Project Structure
 
 ```
@@ -163,10 +206,12 @@ Vox_GPT/
 │   └── chatbot.c       # Code for the ESP8266 microcontroller.
 ├── Backend/
 │   ├── chatbot.py      # Flask backend server.
+│   ├── Keyboard_Control.py # Python script for keyboard control.
 │   ├── requirements.txt# Python dependencies.
 │   └── .env            # Environment variables (Gemini API key).
 └── Frontend/
-    └── chatbot.html    # The main web interface for the chatbot.
+    ├── chatbot.html    # The main web interface for the chatbot.
+    └── Keyboard_Control.html # The web interface for keyboard control.
 ```
 
 ## Troubleshooting

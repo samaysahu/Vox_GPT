@@ -7,12 +7,12 @@
 const char* ssid = "Nisha 4g"; // Replace with your WiFi SSID
 const char* password = "khush292009"; // Replace with your WiFi password
 
-// Servo pin definitions (ESP8266 GPIO pins)
+// Servo pin definitions
 #define BASE_PIN D4
 #define SHOULDER_PIN D1
 #define ELBOW_PIN D5
-#define WRIST_PIN D6
-#define GRIPPER_PIN D7
+#define WRIST_PIN D8
+#define GRIPPER_PIN D0
 
 // Servo objects
 Servo baseServo;
@@ -21,17 +21,12 @@ Servo elbowServo;
 Servo wristServo;
 Servo gripperServo;
 
-// Servo angles and state (using logical angles that map to 0-180 servo range)
-int baseAngle = 90; // Center position (logical)
+// Servo angles and state
+int baseAngle = 90; // Center position
 int shoulderAngle = 90;
 int elbowAngle = 90;
 int wristAngle = 90;
 bool gripperState = false; // false = Open, true = Closed
-
-// Helper function to convert logical angle (-180 to 180) to servo angle (0 to 180)
-int mapToServoAngle(int logicalAngle) {
-  return constrain(logicalAngle + 90, 0, 180);
-}
 
 // Web server on port 80
 ESP8266WebServer server(80);
@@ -48,22 +43,19 @@ void setup() {
   gripperServo.attach(GRIPPER_PIN);
 
   // Set initial positions
-  baseServo.write(mapToServoAngle(baseAngle));
+  baseServo.write(baseAngle);
   shoulderServo.write(shoulderAngle);
   elbowServo.write(elbowAngle);
-  wristServo.write(mapToServoAngle(wristAngle));
+  wristServo.write(wristAngle);
   gripperServo.write(gripperState ? 0 : 180); // 0 = Closed, 180 = Open
 
   // Connect to WiFi
-  WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
-  Serial.print("Connecting to WiFi");
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
-  Serial.println("\nWiFi connected!");
-  Serial.print("IP address: ");
+  Serial.println("\nWiFi connected");
   Serial.println(WiFi.localIP());
 
   // Define server endpoints
@@ -92,53 +84,43 @@ void handleCommand() {
 
     // Process commands
     if (command == "WAIST_LEFT") {
-      baseAngle = constrain(baseAngle - 5, -180, 180);
-      baseServo.write(mapToServoAngle(baseAngle));
-      delay(50); // Small delay for servo movement
+      baseAngle = max(-180, baseAngle - 5);
+      baseServo.write(baseAngle);
     } else if (command == "WAIST_RIGHT") {
-      baseAngle = constrain(baseAngle + 5, -180, 180);
-      baseServo.write(mapToServoAngle(baseAngle));
-      delay(50);
+      baseAngle = min(180, baseAngle + 5);
+      baseServo.write(baseAngle);
     } else if (command == "SHOULDER_UP") {
-      shoulderAngle = constrain(shoulderAngle + 5, 0, 170);
+      shoulderAngle = min(170, shoulderAngle + 5);
       shoulderServo.write(shoulderAngle);
-      delay(50);
     } else if (command == "SHOULDER_DOWN") {
-      shoulderAngle = constrain(shoulderAngle - 5, 0, 170);
+      shoulderAngle = max(0, shoulderAngle - 5);
       shoulderServo.write(shoulderAngle);
-      delay(50);
     } else if (command == "ELBOW_UP") {
-      elbowAngle = constrain(elbowAngle + 5, 0, 170);
+      elbowAngle = min(170, elbowAngle + 5);
       elbowServo.write(elbowAngle);
-      delay(50);
     } else if (command == "ELBOW_DOWN") {
-      elbowAngle = constrain(elbowAngle - 5, 0, 170);
+      elbowAngle = max(0, elbowAngle - 5);
       elbowServo.write(elbowAngle);
-      delay(50);
     } else if (command == "WRIST_LEFT") {
-      wristAngle = constrain(wristAngle - 5, -180, 180);
-      wristServo.write(mapToServoAngle(wristAngle));
-      delay(50);
+      wristAngle = max(-180, wristAngle - 5);
+      wristServo.write(wristAngle);
     } else if (command == "WRIST_RIGHT") {
-      wristAngle = constrain(wristAngle + 5, -180, 180);
-      wristServo.write(mapToServoAngle(wristAngle));
-      delay(50);
+      wristAngle = min(180, wristAngle + 5);
+      wristServo.write(wristAngle);
     } else if (command == "GRIPPER_TOGGLE") {
       gripperState = !gripperState;
-      gripperServo.write(gripperState ?  120 : 0);
-      delay(50);
+      gripperServo.write(gripperState ? 0 : 180);
     } else if (command == "EMERGENCY_STOP") {
       baseAngle = 90;
       shoulderAngle = 90;
       elbowAngle = 90;
       wristAngle = 90;
       gripperState = false;
-      baseServo.write(mapToServoAngle(baseAngle));
+      baseServo.write(baseAngle);
       shoulderServo.write(shoulderAngle);
       elbowServo.write(elbowAngle);
-      wristServo.write(mapToServoAngle(wristAngle));
+      wristServo.write(wristAngle);
       gripperServo.write(180);
-      delay(100);
       response = "{\"status\":\"Stopped\"}";
     } else {
       server.send(400, "application/json", "{\"status\":\"Invalid command\"}");
@@ -160,7 +142,6 @@ void handleTelemetry() {
   doc["wristAngle"] = wristAngle;
   doc["gripperState"] = gripperState ? "Closed" : "Open";
   doc["systemStatus"] = (WiFi.status() == WL_CONNECTED) ? "Operational" : "Error";
-  doc["boardType"] = "ESP8266";
 
   String response;
   serializeJson(doc, response);
