@@ -161,7 +161,7 @@ cd Vox_GPT
 
 ## How to Use
 
-### Voice Control
+### Control
 
 -   Simply type your commands into the chat box and press Enter or click the send button.
 -   The chatbot will interpret your command and send it to the robotic arm.
